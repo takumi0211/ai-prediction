@@ -31,7 +31,7 @@ async function getAIResponse(question) {
 あなたは以下の質問に対して、4つの異なる回答を生成してください。
 以下の制約を厳密に守ってください：
 
-1. 各回答は50文字���内で答えること
+1. 各回答は50文字以内で答えること
 2. 必ず「です」か「ます」で終わる丁寧な表現を使うこと
 3. 一文で完結させること
 4. 具体的で明確な表現を使うこと
@@ -73,7 +73,7 @@ async function getAIResponse(question) {
         });
 
         if (!response.ok) {
-            let errorMessage = 'APIエラーが発生しました';
+            let errorMessage = 'APIエラーが発生しま���た';
             try {
                 const errorData = await response.json();
                 console.error('API Error Response:', errorData);
@@ -107,7 +107,7 @@ async function getAIResponse(question) {
     } catch (error) {
         console.error('API Error Details:', error);
         const errorMessage = error.message.includes('API') 
-            ? 'AIからの回答の取得に失敗しました。しばらく待ってから再度お試しください。'
+            ? 'AIからの回答の取得に失敗しました。しばらく待ってから再度お試しく���さい。'
             : 'エラーが発生しました。インターネット接続を確認してください。';
         showError(errorMessage);
         throw error;
@@ -284,8 +284,12 @@ document.getElementById('next-to-step2').addEventListener('click', async () => {
         const choices = await getAIResponse(question);
         document.getElementById('current-question-text').textContent = question;
         
-        // 選択肢をランダムに並び替え
-        const shuffledChoices = [...choices.choices].sort(() => Math.random() - 0.5);
+        // 選択肢をランダムに並び替え（Fisher-Yatesアルゴリズムを使用）
+        const shuffledChoices = [...choices.choices];
+        for (let i = shuffledChoices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledChoices[i], shuffledChoices[j]] = [shuffledChoices[j], shuffledChoices[i]];
+        }
         
         // 選択肢を表示
         const playersSection = document.getElementById('players-section');
