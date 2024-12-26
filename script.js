@@ -276,11 +276,14 @@ document.getElementById('next-to-step2').addEventListener('click', async () => {
         const choices = await getAIResponse(question);
         document.getElementById('current-question-text').textContent = question;
         
+        // 選択肢をランダムに並び替え
+        const shuffledChoices = [...choices.choices].sort(() => Math.random() - 0.5);
+        
         // 選択肢を表示
         const playersSection = document.getElementById('players-section');
         playersSection.innerHTML = '';
         
-        choices.choices.forEach((choice, index) => {
+        shuffledChoices.forEach((choice, index) => {
             const choiceDiv = document.createElement('div');
             choiceDiv.className = 'choice-button';
             choiceDiv.innerHTML = `
@@ -298,9 +301,11 @@ document.getElementById('next-to-step2').addEventListener('click', async () => {
                 const result = document.createElement('div');
                 result.className = `result ${isCorrect ? 'correct' : 'incorrect'}`;
                 result.textContent = isCorrect ? '正解！' : '不正解...';
-                playersSection.appendChild(result);
                 
-                // すべてのボタンを無効化
+                // 結果を選択したボタンの直後に表示
+                this.parentElement.appendChild(result);
+                
+                // すべてのボタンを無効化し、正解を表示
                 document.querySelectorAll('.choice').forEach(btn => {
                     btn.disabled = true;
                     if (btn.dataset.correct === 'true') {
