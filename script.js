@@ -31,7 +31,7 @@ async function getAIResponse(question) {
 あなたは以下の質問に対して、4つの異なる回答を生成してください。
 以下の制約を厳密に守ってください：
 
-1. 各回答は50文字以内で答えること
+1. 各回答は50文字���内で答えること
 2. 必ず「です」か「ます」で終わる丁寧な表現を使うこと
 3. 一文で完結させること
 4. 具体的で明確な表現を使うこと
@@ -45,10 +45,10 @@ async function getAIResponse(question) {
 以下の形式で4つの回答を出力してください：
 {
     "choices": [
-        {"text": "最も適切な回答", "isCorrect": true},
-        {"text": "2番目の回答", "isCorrect": false},
-        {"text": "3番目の回答", "isCorrect": false},
-        {"text": "4番目の回答", "isCorrect": false}
+        {"text": "回答1", "isCorrect": false},
+        {"text": "回答2", "isCorrect": false},
+        {"text": "回答3", "isCorrect": false},
+        {"text": "回答4", "isCorrect": false}
     ]
 }`;
 
@@ -94,6 +94,14 @@ async function getAIResponse(question) {
         }
 
         const choices = JSON.parse(jsonMatch[0]);
+        
+        // ランダムに1つの回答を正解として設定
+        const correctIndex = Math.floor(Math.random() * choices.choices.length);
+        choices.choices = choices.choices.map((choice, index) => ({
+            ...choice,
+            isCorrect: index === correctIndex
+        }));
+
         return choices;
 
     } catch (error) {
